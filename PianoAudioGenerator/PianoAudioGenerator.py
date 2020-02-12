@@ -169,45 +169,45 @@ def LoadKeySounds(TransposedSounds_file_path, KeyConfig_file_path):
     sounds = map(pygame.sndarray.make_sound, pickle.load(open(TransposedSounds_file_path, 'rb')))
     return keys, sounds
 
-# Driver Code
-# Paths
-mainpath = 'E:\Github Codes and Projects\Projects\MediaTor-Project\PianoAudioGenerator'
-TransposedSounds_file_path = os.path.join(mainpath, 'GeneratedSounds.p')
-RefSound_file_path = os.path.join(mainpath, 'bowl.wav')
-KeyConfig_file_path = os.path.join(mainpath, 'KeyConfig.kc')
+# # Driver Code
+# # Paths
+# mainpath = 'E:\Github Codes and Projects\Projects\MediaTor-Project\PianoAudioGenerator'
+# TransposedSounds_file_path = os.path.join(mainpath, 'GeneratedSounds.p')
+# RefSound_file_path = os.path.join(mainpath, 'bowl.wav')
+# KeyConfig_file_path = os.path.join(mainpath, 'KeyConfig.kc')
 
-# Controls
-GenSounds = False
-SaveSounds = True
+# # Controls
+# GenSounds = False
+# SaveSounds = True
 
-# Create / Load Piano Sounds
-# If Available load precreated sounds
-KeySoundDict = None
-if not GenSounds and os.path.exists(TransposedSounds_file_path):
-    # Load Generated Sounds
-    keys, sounds = LoadKeySounds(TransposedSounds_file_path, KeyConfig_file_path)
-    # Get Reference Audio File
-    fps, sound = wavfile.read(RefSound_file_path)
-    # Init Pygame
-    pygame.mixer.init(fps, -16, 1, 2048)
-    screen = pygame.display.set_mode((150, 150))
-    KeySoundDict = dict(zip(keys, sounds))
-else:
-    # Generate Sounds
-    KeySoundDict = CreatePianoSounds(RefSound_file_path, KeyConfig_file_path, TransposedSounds_file_path=TransposedSounds_file_path, SaveSounds=SaveSounds)
+# # Create / Load Piano Sounds
+# # If Available load precreated sounds
+# KeySoundDict = None
+# if not GenSounds and os.path.exists(TransposedSounds_file_path):
+#     # Load Generated Sounds
+#     keys, sounds = LoadKeySounds(TransposedSounds_file_path, KeyConfig_file_path)
+#     # Get Reference Audio File
+#     fps, sound = wavfile.read(RefSound_file_path)
+#     # Init Pygame
+#     pygame.mixer.init(fps, -16, 1, 2048)
+#     screen = pygame.display.set_mode((150, 150))
+#     KeySoundDict = dict(zip(keys, sounds))
+# else:
+#     # Generate Sounds
+#     KeySoundDict = CreatePianoSounds(RefSound_file_path, KeyConfig_file_path, TransposedSounds_file_path=TransposedSounds_file_path, SaveSounds=SaveSounds)
 
         
 
-# Get Piano Sequence
-seqPath = os.path.join(mainpath, 'DeathNote.piseq')
-MainSeq, SubSeqs = ParsePianoSequenceFile(seqPath)
-print(MainSeq)
-print(SubSeqs)
-Seq = GetFullMainSeq(MainSeq, SubSeqs)
-print("Audio Seq:")
-print(Seq)
+# # Get Piano Sequence
+# seqPath = os.path.join(mainpath, 'DeathNote.piseq')
+# MainSeq, SubSeqs = ParsePianoSequenceFile(seqPath)
+# print(MainSeq)
+# print(SubSeqs)
+# Seq = GetFullMainSeq(MainSeq, SubSeqs)
+# print("Audio Seq:")
+# print(Seq)
 
 
 
-# Play Piano Sequence
-LoopPianoSequence(Seq, KeySoundDict)
+# # Play Piano Sequence
+# LoopPianoSequence(Seq, KeySoundDict)
