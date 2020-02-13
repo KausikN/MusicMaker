@@ -18,8 +18,8 @@ RefSound_file_path = input("Reference Sound File Path: ")
 KeyConfig_file_path = input("KeyConfigs File Path: ")
 
 # Controls
-GenSounds = False
-SaveSounds = True
+GenSounds = (input("Do you want to generate sounds? ") in ['y', 'yes']) # False
+SaveSounds = (input("Do you want to save sounds? ") in ['y', 'yes']) # True
 
 # Create / Load Piano Sounds
 # If Available load precreated sounds
