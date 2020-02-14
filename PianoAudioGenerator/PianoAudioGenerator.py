@@ -2,10 +2,13 @@
 Summary
 This script is used for generating audio of various frequencies in piano code and mixing them
 
+Controls
+ - Real time update playing code from the piseq code by pressing SPACE
+  - Exit by pressing ESC
+
 Goals
  - Piano Key Mapping
  - Audio File to bs code
- - Real time playing to piseq code
 '''
 import time
 from scipy.io import wavfile
@@ -114,8 +117,10 @@ def GetFullMainSeq(MainSeq, SubSeqs):
     return FullMainSeq
 
 def PlayPianoSequence(Seq, KeySoundDict, fade_ms=50):
+    global seqPath
+    SeqRef = Seq.copy()
     print("Started Audio Sequence")
-    for s in Seq:
+    for s in SeqRef:
         if s[1] != '':
             print("Playing key", s[0], " for", s[1], "ms async:", s[2])
             if s[2] == 'False':
@@ -131,11 +136,15 @@ def PlayPianoSequence(Seq, KeySoundDict, fade_ms=50):
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 pygame.quit()
                 quit()
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                print("Refreshed Sequence")
+                SeqRef = GetFinalSequenceFromFile(seqPath)
     print("Ended Audio Sequence")
+    return SeqRef
 
 def LoopPianoSequence(Seq, KeySoundDict):
     while True:
-        PlayPianoSequence(Seq, KeySoundDict)
+        Seq = PlayPianoSequence(Seq, KeySoundDict)
 
 def CreatePianoSounds(RefSound_file_path, KeyConfig_file_path, TransposedSounds_file_path='', SaveSounds=False):
     # Get Reference Audio File
@@ -169,45 +178,50 @@ def LoadKeySounds(TransposedSounds_file_path, KeyConfig_file_path):
     sounds = map(pygame.sndarray.make_sound, pickle.load(open(TransposedSounds_file_path, 'rb')))
     return keys, sounds
 
-# # Driver Code
-# # Paths
-# mainpath = 'E:\Github Codes and Projects\Projects\MediaTor-Project\PianoAudioGenerator'
-# TransposedSounds_file_path = os.path.join(mainpath, 'GeneratedSounds.p')
-# RefSound_file_path = os.path.join(mainpath, 'bowl.wav')
-# KeyConfig_file_path = os.path.join(mainpath, 'KeyConfig.kc')
+def GetFinalSequenceFromFile(seqPath):
+    MainSeq, SubSeqs = ParsePianoSequenceFile(seqPath)
+    return GetFullMainSeq(MainSeq, SubSeqs)
 
-# # Controls
-# GenSounds = False
-# SaveSounds = True
+# Driver Code
+# Paths
+mainpath = 'E:\Github Codes and Projects\Projects\MusicMaker\PianoAudioGenerator'
+TransposedSounds_file_path = os.path.join(mainpath, 'GeneratedSounds.p')
+RefSound_file_path = os.path.join(mainpath, 'bowl.wav')
+KeyConfig_file_path = os.path.join(mainpath, 'KeyConfig.kc')
 
-# # Create / Load Piano Sounds
-# # If Available load precreated sounds
-# KeySoundDict = None
-# if not GenSounds and os.path.exists(TransposedSounds_file_path):
-#     # Load Generated Sounds
-#     keys, sounds = LoadKeySounds(TransposedSounds_file_path, KeyConfig_file_path)
-#     # Get Reference Audio File
-#     fps, sound = wavfile.read(RefSound_file_path)
-#     # Init Pygame
-#     pygame.mixer.init(fps, -16, 1, 2048)
-#     screen = pygame.display.set_mode((150, 150))
-#     KeySoundDict = dict(zip(keys, sounds))
-# else:
-#     # Generate Sounds
-#     KeySoundDict = CreatePianoSounds(RefSound_file_path, KeyConfig_file_path, TransposedSounds_file_path=TransposedSounds_file_path, SaveSounds=SaveSounds)
+# Controls
+GenSounds = False
+SaveSounds = False
+
+# Create / Load Piano Sounds
+# If Available load precreated sounds
+KeySoundDict = None
+if not GenSounds and os.path.exists(TransposedSounds_file_path):
+    # Load Generated Sounds
+    keys, sounds = LoadKeySounds(TransposedSounds_file_path, KeyConfig_file_path)
+    # Get Reference Audio File
+    fps, sound = wavfile.read(RefSound_file_path)
+    # Init Pygame
+    pygame.mixer.init(fps, -16, 1, 2048)
+    screen = pygame.display.set_mode((150, 150))
+    KeySoundDict = dict(zip(keys, sounds))
+else:
+    # Generate Sounds
+    KeySoundDict = CreatePianoSounds(RefSound_file_path, KeyConfig_file_path, TransposedSounds_file_path=TransposedSounds_file_path, SaveSounds=SaveSounds)
 
         
 
-# # Get Piano Sequence
-# seqPath = os.path.join(mainpath, 'DeathNote.piseq')
-# MainSeq, SubSeqs = ParsePianoSequenceFile(seqPath)
-# print(MainSeq)
-# print(SubSeqs)
-# Seq = GetFullMainSeq(MainSeq, SubSeqs)
-# print("Audio Seq:")
-# print(Seq)
+# Get Piano Sequence
+seqFileName = 'NewBatman.piseq'
+seqPath = os.path.join(mainpath, 'Music', seqFileName)
+MainSeq, SubSeqs = ParsePianoSequenceFile(seqPath)
+print(MainSeq)
+print(SubSeqs)
+Seq = GetFullMainSeq(MainSeq, SubSeqs)
+print("Audio Seq:")
+print(Seq)
 
 
 
-# # Play Piano Sequence
-# LoopPianoSequence(Seq, KeySoundDict)
+# Play Piano Sequence
+LoopPianoSequence(Seq, KeySoundDict)
