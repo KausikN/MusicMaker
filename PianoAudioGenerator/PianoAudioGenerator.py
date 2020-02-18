@@ -116,11 +116,14 @@ def GetFullMainSeq(MainSeq, SubSeqs):
             FullMainSeq.append([s[1], s[2], s[3]])
     return FullMainSeq
 
-def PlayPianoSequence(Seq, KeySoundDict, fade_ms=50):
+def PlayPianoSequence(Seq, KeySoundDict, RuntimeRefreshingMode, fade_ms=50):
     global seqPath
     SeqRef = Seq.copy()
     print("Started Audio Sequence")
     for s in SeqRef:
+        if RuntimeRefreshingMode == 'All':
+            SeqRef = GetSequenceFromFile(seqPath)
+
         if s[1] != '':
             print("Playing key", s[0], " for", s[1], "ms async:", s[2])
             if s[2] == 'False':
@@ -138,13 +141,15 @@ def PlayPianoSequence(Seq, KeySoundDict, fade_ms=50):
                 quit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 print("Refreshed Sequence")
-                SeqRef = GetFinalSequenceFromFile(seqPath)
+                SeqRef = GetSequenceFromFile(seqPath)
     print("Ended Audio Sequence")
     return SeqRef
 
-def LoopPianoSequence(Seq, KeySoundDict):
+def LoopPianoSequence(Seq, KeySoundDict, RuntimeRefreshingMode):
     while True:
-        Seq = PlayPianoSequence(Seq, KeySoundDict)
+        if RuntimeRefreshingMode == 'Loop':
+            Seq = GetSequenceFromFile(seqPath)
+        Seq = PlayPianoSequence(Seq, KeySoundDict, RuntimeRefreshingMode)
 
 def CreatePianoSounds(RefSound_file_path, KeyConfig_file_path, TransposedSounds_file_path='', SaveSounds=False):
     # Get Reference Audio File
@@ -178,7 +183,7 @@ def LoadKeySounds(TransposedSounds_file_path, KeyConfig_file_path):
     sounds = map(pygame.sndarray.make_sound, pickle.load(open(TransposedSounds_file_path, 'rb')))
     return keys, sounds
 
-def GetFinalSequenceFromFile(seqPath):
+def GetSequenceFromFile(seqPath):
     MainSeq, SubSeqs = ParsePianoSequenceFile(seqPath)
     return GetFullMainSeq(MainSeq, SubSeqs)
 
@@ -192,6 +197,7 @@ KeyConfig_file_path = os.path.join(mainpath, 'KeyConfig.kc')
 # Controls
 GenSounds = False
 SaveSounds = False
+RuntimeRefreshingMode = 'All' # If Loop Sequence gets refreshed from file every loop, If All - Sequence gets refreshed in every iteration of playing sequence
 
 # Create / Load Piano Sounds
 # If Available load precreated sounds
@@ -224,4 +230,4 @@ print(Seq)
 
 
 # Play Piano Sequence
-LoopPianoSequence(Seq, KeySoundDict)
+LoopPianoSequence(Seq, KeySoundDict, RuntimeRefreshingMode)

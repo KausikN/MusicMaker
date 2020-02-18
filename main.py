@@ -20,6 +20,7 @@ KeyConfig_file_path = input("KeyConfigs File Path: ")
 # Controls
 GenSounds = (input("Do you want to generate sounds? ") in ['y', 'yes']) # False
 SaveSounds = (input("Do you want to save sounds? ") in ['y', 'yes']) # True
+RuntimeRefreshingMode = 'Loop' # If Loop Sequence gets refreshed from file every loop, If All - Sequence gets refreshed in every iteration of playing sequence
 
 # Create / Load Piano Sounds
 # If Available load precreated sounds
@@ -52,4 +53,4 @@ print(Seq)
 
 
 # Play Piano Sequence
-pa.LoopPianoSequence(Seq, KeySoundDict)
+pa.LoopPianoSequence(Seq, KeySoundDict, RuntimeRefreshingMode)
