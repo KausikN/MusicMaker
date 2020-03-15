@@ -119,20 +119,20 @@ def GetFullMainSeq(MainSeq, SubSeqs):
 def PlayPianoSequence(Seq, KeySoundDict, RuntimeRefreshingMode, fade_ms=50):
     global seqPath
     SeqRef = Seq.copy()
-    print("Started Audio Sequence")
+    #print("Started Audio Sequence")
     for s in SeqRef:
         if RuntimeRefreshingMode == 'All':
             SeqRef = GetSequenceFromFile(seqPath)
 
         if s[1] != '':
-            print("Playing key", s[0], " for", s[1], "ms async:", s[2])
+            #print("Playing key", s[0], " for", s[1], "ms async:", s[2])
             if s[2] == 'False':
                 KeySoundDict[s[0]].play(fade_ms=fade_ms)
                 time.sleep(float(s[1])/1000)
             else:
                 KeySoundDict[s[0]].play(fade_ms=fade_ms)
         else:
-            print("Delaying for", float(s[0]), "ms")
+            #print("Delaying for", float(s[0]), "ms")
             time.sleep(float(s[0])/1000)
 
         for event in pygame.event.get():
@@ -140,9 +140,9 @@ def PlayPianoSequence(Seq, KeySoundDict, RuntimeRefreshingMode, fade_ms=50):
                 pygame.quit()
                 quit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                print("Refreshed Sequence")
+                #print("Refreshed Sequence")
                 SeqRef = GetSequenceFromFile(seqPath)
-    print("Ended Audio Sequence")
+    #print("Ended Audio Sequence")
     return SeqRef
 
 def LoopPianoSequence(Seq, KeySoundDict, RuntimeRefreshingMode):
@@ -218,7 +218,7 @@ else:
         
 
 # Get Piano Sequence
-seqFileName = 'NewBatman.piseq'
+seqFileName = 'Empire.piseq'
 seqPath = os.path.join(mainpath, 'Music', seqFileName)
 MainSeq, SubSeqs = ParsePianoSequenceFile(seqPath)
 print(MainSeq)

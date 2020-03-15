@@ -1,5 +1,5 @@
-left ctrl
-left shift
+leftctrl
+leftshift
 <
 w
 x
@@ -17,15 +17,15 @@ e
 r
 t
 &
-world 73
+world73
 "
 '
 (
 -
-world 72
+world72
 _
-world 71
-world 64
+world71
+world64
 y
 u
 i
@@ -41,8 +41,8 @@ n
 ;
 :
 !
-right shift
-right ctrl
+rightshift
+rightctrl
 left
 down
 up
